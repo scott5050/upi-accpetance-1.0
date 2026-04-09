@@ -3,76 +3,111 @@
 <head>
     <link rel="manifest" href="./manifest.json">
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>UPI 거래 테스트 매니저 v3.4</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>UPI 거래 테스트 매니저 v3.7</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
         :root { 
-            --upi-blue: #00338D; --upi-red: #C8102E; --upi-dark-red: #A50D24; --upi-teal: #008077; 
-            --upi-grad: linear-gradient(135deg, #00338D 0%, #0056b3 100%); --gray: #ececec; 
+            --upi-blue: #00338D;
+            --upi-red: #C8102E; --upi-dark-red: #A50D24; --upi-teal: #008077; 
+            --upi-grad: linear-gradient(135deg, #00338D 0%, #0056b3 100%); --gray: #ececec;
         }
-        body, input, textarea, button, select { font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif; }
-        body { background: #f0f2f5; padding: 20px; display: flex; justify-content: center; margin: 0; }
-        .app-container { width: 100%; max-width: 450px; background: white; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); padding: 25px; margin-bottom: 50px;}
-        .header-area { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 25px; border-bottom: 2px solid #eee; padding-bottom: 15px; }
-        .header-logo { height: 28px; }
-        h2 { margin: 0; color: #000; font-size: 22px; font-weight: 800; }
+        body { background: #f0f2f5; margin: 0; padding: 10px; display: flex; justify-content: center;
+        overflow-x: hidden; width: 100vw; box-sizing: border-box; font-family: 'Pretendard', sans-serif; }
+        .app-container { width: 100%;
+        max-width: 450px; background: white; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); padding: 20px; box-sizing: border-box; overflow-x: hidden;
+        }
         
-        .section-label { font-size: 14px; color: #555; font-weight: bold; margin: 20px 0 10px; padding-left: 10px; border-left: 4px solid var(--upi-blue); }
-        input, textarea { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 10px; box-sizing: border-box; font-size: 15px; background: #fafafa; outline: none; }
-        .amount-wrapper { position: relative; display: flex; align-items: center; }
-        .amount-wrapper input { padding-right: 35px; text-align: right; }
-        .amount-unit { position: absolute; right: 12px; font-weight: bold; pointer-events: none; }
+        .header-area { display: flex;
+        align-items: center; justify-content: center; gap: 10px; margin-bottom: 20px; border-bottom: 2px solid #eee; padding-bottom: 15px;
+        }
+        .header-logo { height: 24px;
+        }
+        h2 { margin: 0; color: #000; font-size: 20px; font-weight: 800;
+        }
         
-        .record-tabs { display: flex; align-items: center; gap: 8px; margin: 15px 0; overflow-x: auto; padding-bottom: 10px; }
-        .tab-btn { width: 45px; height: 45px; flex: 0 0 auto; border-radius: 50%; border: 1px solid #ddd; background: white; cursor: pointer; font-size: 15px; font-weight: bold; display: flex; align-items: center; justify-content: center; transition: transform 0.1s; }
-        .tab-btn:active { transform: scale(0.92); }
-        .tab-btn.active { background: var(--upi-blue); color: white; border-color: var(--upi-blue); }
-        
-        .button-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
-        .button-grid.triple { grid-template-columns: 1fr 1fr 1fr; }
-        button.item { padding: 14px 5px; border: none; border-radius: 12px; background: var(--gray); cursor: pointer; font-size: 13px; font-weight: 600; color: #444; transition: 0.1s; }
-        button.item:active { transform: scale(0.95); }
-        button.item.selected { background: var(--upi-grad); color: white; }
-        
-        .toggle-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 8px; background: #f8f9fa; border-radius: 10px; border: 1px solid #eee; margin-bottom: 5px; }
-        .toggle-btn { width: 45px; height: 28px; border-radius: 14px; border: none; background: #ccc; font-weight: bold; cursor: pointer; color: white; font-size: 11px; }
-        .toggle-btn.state-y { background: var(--upi-teal); }
-        .toggle-btn.state-n { background: var(--upi-dark-red); }
-        
-        .card-list-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #eee; }
-        .card-input { width: 60% !important; padding: 8px 12px !important; font-size: 13px !important; background: #fff !important; }
-        
-        .submit-area { margin-top: 30px; display: flex; gap: 10px; }
-        .submit-btn { flex: 1; padding: 18px; color: white; border: none; border-radius: 15px; font-size: 17px; font-weight: bold; cursor: pointer; transition: 0.1s; }
-        .submit-btn:active { transform: scale(0.98); }
+        .record-tabs, #summaryTabList { display: flex;
+        align-items: center; gap: 8px; margin: 15px 0; overflow-x: auto; padding-bottom: 5px; -webkit-overflow-scrolling: touch; white-space: nowrap;
+        }
+        .tab-btn { min-width: 42px; height: 42px; flex: 0 0 auto; border-radius: 50%;
+        border: 1px solid #ddd; background: white; cursor: pointer; font-size: 14px; font-weight: bold; display: flex; align-items: center; justify-content: center;
+        }
+        .tab-btn.active { background: var(--upi-blue); color: white; border-color: var(--upi-blue);
+        }
 
-        .modal-overlay { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:1000; overflow-y:auto; }
-        .report-box { background: #fff; padding: 15px; border-radius: 15px; border: 1.5px solid var(--upi-blue); margin-bottom: 20px; }
-        .report-title { font-size: 16px; font-weight: 800; border-bottom: 2px solid #eee; padding-bottom: 8px; margin-bottom: 12px; color: var(--upi-blue); }
-        .report-line { font-size: 14px; margin-bottom: 8px; line-height: 1.5; }
-        .report-line b { color: #333; }
-        .status-tag { display: inline-block; padding: 2px 8px; border-radius: 5px; font-size: 12px; font-weight: bold; color: white; margin-right: 5px; }
-        .tag-success { background: var(--upi-teal); }
-        .tag-fail { background: var(--upi-red); }
-        .summary-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px dotted #ddd; font-size: 14px; align-items: center; }
+        .section-label { font-size: 14px; color: #555; font-weight: bold; margin: 20px 0 10px;
+        padding-left: 10px; border-left: 4px solid var(--upi-blue); }
+        input, textarea { width: 100%;
+        padding: 12px; border: 1px solid #ddd; border-radius: 10px; box-sizing: border-box; font-size: 15px; background: #fafafa; outline: none;
+        }
+        
+        .button-grid { display: grid;
+        grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
+        .button-grid.triple { grid-template-columns: 1fr 1fr 1fr;
+        }
+        button.item { padding: 12px 5px; border: none; border-radius: 10px; background: var(--gray);
+        cursor: pointer; font-size: 13px; font-weight: 600; color: #444; }
+        button.item.selected { background: var(--upi-grad);
+        color: white; }
+        
+        .toggle-row { display: flex;
+        justify-content: space-between; align-items: center; padding: 10px 8px; background: #f8f9fa; border-radius: 10px; border: 1px solid #eee; margin-bottom: 5px;
+        }
+        .toggle-btn { width: 42px; height: 26px; border-radius: 13px; border: none; background: #ccc;
+        font-weight: bold; cursor: pointer; color: white; font-size: 11px; }
+        .toggle-btn.state-y { background: var(--upi-teal);
+        }
+        .toggle-btn.state-n { background: var(--upi-dark-red);
+        }
+        
+        .card-list-item { display: flex;
+        justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #eee;
+        }
+        .card-input { width: 60% !important; padding: 8px 12px !important; font-size: 13px !important;
+        background: #fff !important; }
+        
+        .submit-area { margin-top: 25px;
+        display: flex; gap: 8px; }
+        .submit-btn { flex: 1; padding: 16px; color: white;
+        border: none; border-radius: 12px; font-size: 16px; font-weight: bold; cursor: pointer;
+        }
+
+        .modal-overlay { display:none;
+        position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:1000; padding: 10px; box-sizing: border-box;
+        }
+        .report-box { background: #fff; padding: 15px; border-radius: 15px; border: 1.5px solid var(--upi-blue);
+        margin-bottom: 15px; }
+        .status-tag { display: inline-block; padding: 2px 8px; border-radius: 5px;
+        font-size: 11px; font-weight: bold; color: white; margin-right: 5px; }
+        .tag-success { background: var(--upi-teal);
+        }
+        .tag-fail { background: var(--upi-red);
+        }
+        .summary-row { display: flex; justify-content: space-between; padding: 8px 0;
+        border-bottom: 1px dotted #ddd; font-size: 13px; align-items: center; }
+
+        .exit-modal-box { background: white;
+        border-radius: 20px; padding: 25px; text-align: center; max-width: 400px; margin: 30vh auto; box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+        }
+        .exit-title { font-weight: 800; font-size: 18px; margin-bottom: 15px; color: var(--upi-dark-red);
+        }
+        .exit-desc { font-size: 14px; color: #666; margin-bottom: 25px; line-height: 1.6;
+        }
+        .exit-btn-group { display: flex; flex-direction: column; gap: 10px;
+        }
     </style>
 </head>
 <body>
 
 <div class="app-container">
-    <div class="header-area"><img src="Logo.png" alt="UPI" class="header-logo"><h2>거래 테스트 기록</h2></div>
+    <div class="header-area"><img src="Logo.png" alt="UPI" class="header-logo"><h2>거래 테스트 매니저 v3.7</h2></div>
 
     <div class="input-group">
-        <label style="font-size:14px; font-weight:600;">가맹점명</label>
-        <input type="text" id="storeName" placeholder="테스트 가맹점을 입력하세요">
-    </div>
-    <div class="input-group" style="margin-top:10px;">
-        <label style="font-size:14px; font-weight:600;">테스트 일시</label>
-        <input type="text" id="testDateTime" readonly style="color:#888;">
+        <label style="font-size:13px; font-weight:600;">가맹점명</label>
+        <input type="text" id="storeName" placeholder="테스트 가맹점 입력">
     </div>
 
-    <div class="record-tabs" id="tabContainer"><button class="add-tab" onclick="addNewRecord()" style="border:none; background:none; font-size:28px; color:var(--upi-teal); font-weight:bold; cursor:pointer;">+</button></div>
+    <div class="record-tabs" id="tabContainer"><button class="add-tab" onclick="addNewRecord()" style="border:none; background:none; font-size:24px; color:var(--upi-teal); cursor:pointer; padding: 0 10px;">+</button></div>
 
     <div id="testForm">
         <div class="section-label">카드 구분</div>
@@ -93,25 +128,22 @@
         </div>
 
         <div class="section-label">금액</div>
-        <div class="amount-wrapper">
-            <input type="text" id="amountDisplay" placeholder="0" oninput="formatCurrency(this)">
-            <span class="amount-unit">￦</span>
+        <div style="position:relative; display:flex; align-items:center;">
+            <input type="text" id="amountDisplay" placeholder="0" oninput="formatCurrency(this)" style="text-align:right; padding-right:35px;">
+            <span style="position:absolute; right:12px; font-weight:bold;">￦</span>
         </div>
 
         <div class="section-label">기능 지원</div>
         <div class="button-grid">
-            <div class="toggle-row"><span>HotKey</span><button class="toggle-btn" id="hotkey" onclick="toggleStep('hotkey')">N/A</button></div>
-            <div class="toggle-row"><span>Brand Selection</span><button class="toggle-btn" id="brandSelection" onclick="toggleStep('brandSelection')">N/A</button></div>
+            <div class="toggle-row"><span>Hotkey</span><button class="toggle-btn" id="hotkey" onclick="toggleStep('hotkey')">N/A</button></div>
+            <div class="toggle-row"><span>Brand</span><button class="toggle-btn" id="brandSelection" onclick="toggleStep('brandSelection')">N/A</button></div>
             <div class="toggle-row"><span>PIN 출력</span><button class="toggle-btn" id="pinOut" onclick="toggleStep('pinOut')">N/A</button></div>
             <div class="toggle-row"><span>PinbyPass</span><button class="toggle-btn" id="pinBypass" onclick="toggleStep('pinBypass')">N/A</button></div>
-            <div class="toggle-row" id="qpsRow"><span>QPS</span><button class="toggle-btn" id="qpsStatus" onclick="toggleStep('qpsStatus')">N/A</button></div>
+            <div class="toggle-row" id="qpsRow"><span>QPS 기능</span><button class="toggle-btn" id="qpsStatus" onclick="toggleStep('qpsStatus')">N/A</button></div>
             <div class="toggle-row"><span>승인 결과</span><button class="toggle-btn" id="status" onclick="toggleStep('status')">N/A</button></div>
         </div>
 
-        <div class="section-label">기타사항</div>
-        <textarea id="memo" placeholder="기타 사항을 입력하세요" oninput="setVal('memo', this.value)"></textarea>
-
-        <div class="section-label">테스트 카드</div>
+        <div class="section-label">가맹점 공통 테스트 카드</div>
         <div style="background:#f0f7f6; padding:15px; border-radius:15px; border: 1px solid #e0eeed;">
             <div class="card-list-item"><span>실물체크</span><input type="text" class="card-input" id="common_realCheck" placeholder="사용 카드" oninput="updateCommonCard('realCheck', this.value)"></div>
             <div class="card-list-item"><span>실물신용</span><input type="text" class="card-input" id="common_realCredit" placeholder="사용 카드" oninput="updateCommonCard('realCredit', this.value)"></div>
@@ -121,29 +153,70 @@
             <div class="card-list-item"><span>화웨이페이</span><input type="text" class="card-input" id="common_huawei" placeholder="사용 카드" oninput="updateCommonCard('huawei', this.value)"></div>
             <div class="card-list-item"><span>QR</span><input type="text" class="card-input" id="common_qr" placeholder="사용 카드" oninput="updateCommonCard('qr', this.value)"></div>
         </div>
+        
+        <div class="section-label">기타사항</div>
+        <textarea id="memo" placeholder="메모 입력" oninput="setVal('memo', this.value)"></textarea>
     </div>
 
     <div class="submit-area">
-        <button class="submit-btn" style="background:var(--upi-blue);" onclick="showResultSummary()">결과 확인</button>
+        <button class="submit-btn" style="background:var(--upi-blue);" onclick="showResultSummary()">요약 확인</button>
         <button class="submit-btn" style="background:var(--upi-teal);" onclick="saveToExcel()">엑셀 저장</button>
     </div>
 </div>
 
 <div id="resultModal" class="modal-overlay">
-    <div class="app-container" style="margin: 20px auto; position:relative; max-width: 420px;">
-        <button onclick="closeResult()" style="position:absolute; right:20px; top:20px; border:none; background:none; font-size:20px; cursor:pointer;">✕</button>
+    <div class="app-container" style="margin: 0 auto; position:relative;">
+        <button onclick="closeResult()" style="position:absolute; right:15px; top:15px; border:none; background:none; font-size:20px;">✕</button>
         <div class="header-area"><h2 style="font-size:18px;">테스트 결과 요약</h2></div>
         <div id="summaryContent"></div>
         <button class="submit-btn" style="background:var(--upi-blue); width:100%; margin-top:10px;" onclick="closeResult()">확인 후 닫기</button>
     </div>
 </div>
 
+<div id="exitModal" class="modal-overlay" style="background:rgba(0,0,0,0.9);">
+    <div class="exit-modal-box">
+        <div class="exit-title">페이지에서 나가시겠습니까?</div>
+        <div class="exit-desc">입력된 테스트 데이터가 저장되지 않았을 수 있습니다.<br>현재 데이터를 저장하고 나가시겠습니까?</div>
+        <div class="exit-btn-group">
+            <button class="submit-btn" style="background:var(--upi-teal);" onclick="saveAndExit()">저장하고 나가기</button>
+            <button class="submit-btn" style="background:#555;" onclick="cancelExit()">아니오 (계속 작성)</button>
+        </div>
+    </div>
+</div>
+
 <script>
-    // [v3.4 수정] 공통 카드 데이터 구조
     let commonCards = { realCheck: '', realCredit: '', realDual: '', apple: '', xiaomi: '', huawei: '', qr: '' };
     const initRecord = () => ({ category: '', subCategory: '', amount: '', hotkey: 'N/A', brandSelection: 'N/A', pinOut: 'N/A', pinBypass: 'N/A', qpsStatus: 'N/A', status: 'N/A', memo: '' });
     let records = [initRecord()];
     let currentIdx = 0;
+
+    function preventBack() {
+        history.pushState(null, null, location.href);
+        window.onpopstate = function () {
+            document.getElementById('exitModal').style.display = 'block';
+            history.pushState(null, null, location.href);
+        };
+    }
+    preventBack();
+
+    window.addEventListener('beforeunload', (e) => {
+        if (document.getElementById('storeName').value || records.some(r => r.category)) {
+            e.preventDefault();
+            e.returnValue = '';
+        }
+    });
+
+    function saveAndExit() {
+        saveToExcel();
+        setTimeout(() => {
+            alert("엑셀 파일이 다운로드되었습니다. 이제 안전하게 브라우저를 종료하셔도 됩니다.");
+            document.getElementById('exitModal').style.display = 'none';
+        }, 500);
+    }
+
+    function cancelExit() {
+        document.getElementById('exitModal').style.display = 'none';
+    }
 
     function getAmountType(amtStr, sub) {
         let val = parseInt((amtStr || "").replace(/[^0-9]/g, "")) || 0;
@@ -151,25 +224,19 @@
         return val >= threshold ? "고액" : "소액";
     }
 
-    // [v3.4 수정] 자동 카드 매핑 로직
     function getAssignedCard(cat, sub) {
         if (!cat || !sub) return "미지정";
         if (sub === 'QR CPM') return commonCards.qr || "미지정";
         if (cat === '듀얼카드') return commonCards.realDual || "미지정";
-        
-        // 페이류 자동 매핑 (입력값 우선 적용)
         if (sub === 'ApplePay') return commonCards.apple || (cat === '체크카드' ? '民生 3784' : (cat === '신용카드' ? '光大 6219' : "미지정"));
         if (sub === 'XiaomiPay') return commonCards.xiaomi || (cat === '체크카드' ? '民生 3784' : (cat === '신용카드' ? '光大 6219' : "미지정"));
         if (sub === 'HuaweiPay') return commonCards.huawei || (cat === '체크카드' ? '民生 3784' : (cat === '신용카드' ? '光大 6219' : "미지정"));
-        
         if (cat === '체크카드') return commonCards.realCheck || "미지정";
         if (cat === '신용카드') return commonCards.realCredit || "미지정";
         return "미지정";
     }
 
     function updateCommonCard(key, val) { commonCards[key] = val; }
-    window.addEventListener('beforeunload', (e) => { if(document.getElementById('storeName').value) { e.preventDefault(); e.returnValue = ''; } });
-
     function formatCurrency(el) {
         let val = el.value.replace(/[^0-9]/g, "");
         if (val) { el.value = parseInt(val).toLocaleString('ko-KR'); records[currentIdx].amount = "￦" + el.value; }
@@ -191,14 +258,15 @@
 
     function addNewRecord() { records.push(initRecord()); currentIdx = records.length - 1; updateUI(); }
     function setVal(key, val, el) { 
-        records[currentIdx][key] = val; 
+        records[currentIdx][key] = val;
         if (el && el.tagName === 'BUTTON') { el.parentElement.querySelectorAll('.item').forEach(b => b.classList.remove('selected')); el.classList.add('selected'); }
     }
     function handleSubCategory(val, el) { setVal('subCategory', val, el); if(val === 'IC 인서트') records[currentIdx].qpsStatus = 'N/A'; updateUI(); }
     function toggleStep(id) { const s = ['N/A', 'Y', 'N']; records[currentIdx][id] = s[(s.indexOf(records[currentIdx][id]) + 1) % 3]; updateUI(); }
 
     function updateUI() {
-        renderTabs(); const r = records[currentIdx];
+        renderTabs();
+        const r = records[currentIdx];
         document.querySelectorAll('.cat-btn').forEach(b => b.classList.toggle('selected', b.innerText === r.category));
         document.querySelectorAll('.sub-btn').forEach(b => b.classList.toggle('selected', b.innerText === r.subCategory));
         document.getElementById('amountDisplay').value = (r.amount || "").replace("￦", "");
@@ -210,31 +278,33 @@
         });
     }
 
+    function getSummaryStatus(key) {
+        if (records.some(r => r[key] === 'Y')) return 'O';
+        if (records.some(r => r[key] === 'N')) return 'X';
+        return '-';
+    }
+
     function showResultSummary() {
         const content = document.getElementById('summaryContent');
         const successList = records.filter(r => r.status === 'Y').map(r => `${r.category.substring(0,2)} ${r.subCategory.replace('Pay','')} ${getAmountType(r.amount, r.subCategory)}`);
         const failList = records.filter(r => r.status === 'N').map(r => `${r.category.substring(0,2)} ${r.subCategory.replace('Pay','')} ${getAmountType(r.amount, r.subCategory)}`);
-        
-        const hasY = (key) => records.some(r => r[key] === 'Y') ? 'O' : 'X';
-
         content.innerHTML = `
             <div class="report-box">
-                <div class="report-title">요약 보고</div>
+                <div style="font-size:15px; font-weight:800; border-bottom:2px solid #eee; padding-bottom:8px; margin-bottom:12px; color:var(--upi-blue);">요약 보고</div>
                 <div class="report-line"><b>가맹점명:</b> ${document.getElementById('storeName').value || '미지정'}</div>
                 <div class="report-line"><span class="status-tag tag-success">성공</span> ${successList.join(', ') || '없음'}</div>
                 <div class="report-line"><span class="status-tag tag-fail">실패</span> ${failList.join(', ') || '없음'}</div>
-                <div class="report-line" style="margin-top:10px; border-top:1px dashed #ccc; padding-top:10px;">
+                <div class="report-line" style="margin-top:10px; border-top:1px dashed #ccc; padding-top:10px; font-size:12px;">
                     <b>기능 지원 요약:</b><br>
-                    - PIN 출력: ${hasY('pinOut')} / - PinbyPass: ${hasY('pinBypass')} / - QPS: ${hasY('qpsStatus')}
+                    Hotkey: ${getSummaryStatus('hotkey')} / Brand: ${getSummaryStatus('brandSelection')} / PIN 출력: ${getSummaryStatus('pinOut')} / PinbyPass: ${getSummaryStatus('pinBypass')} / QPS: ${getSummaryStatus('qpsStatus')}
                 </div>
             </div>
             <div class="section-label">건별 상세 내역</div>
-            <div id="summaryTabList" style="display:flex; gap:5px; margin-bottom:10px; overflow-x:auto;"></div>
-            <div id="summaryDetail" class="report-box" style="border-color:#eee; border-width:1px;"></div>
+            <div id="summaryTabList"></div>
+            <div id="summaryDetail" class="report-box" style="border-color:#eee;"></div>
         `;
-        
         records.forEach((_, i) => {
-            const btn = document.createElement('button'); btn.className = 'tab-btn'; btn.style.width='35px'; btn.style.height='35px'; btn.innerText = (i+1);
+            const btn = document.createElement('button'); btn.className = 'tab-btn'; btn.innerText = (i+1);
             btn.onclick = () => updateSummaryDetail(i);
             document.getElementById('summaryTabList').appendChild(btn);
         });
@@ -245,48 +315,57 @@
     function updateSummaryDetail(idx) {
         const r = records[idx];
         const statusIcon = r.status === 'Y' ? '<span class="status-tag tag-success">성공</span>' : (r.status === 'N' ? '<span class="status-tag tag-fail">실패</span>' : '<span class="status-tag" style="background:#ccc;">N/A</span>');
-        const formatStep = (val) => val === 'Y' ? 'O' : (val === 'N' ? 'X' : '-');
-
+        const f = (val) => val === 'Y' ? 'O' : (val === 'N' ? 'X' : '-');
         document.querySelectorAll('#summaryTabList .tab-btn').forEach((b, i) => b.classList.toggle('active', i === idx));
         document.getElementById('summaryDetail').innerHTML = `
-            <div class="summary-row">
-                <b>Type</b> 
-                <span>${r.category || '-'} / ${r.subCategory || '-'}</span>
-            </div>
-            <div class="summary-row">
-                <b>금액 및 결과</b>
-                <span>${r.amount || '￦0'} (${getAmountType(r.amount, r.subCategory)}) ${statusIcon}</span>
-            </div>
-            <div class="summary-row" style="border-bottom:none; font-size:13px; color:#444;">
+            <div class="summary-row"><b>Type</b> <span>${r.category || '-'} / ${r.subCategory || '-'}</span></div>
+            <div class="summary-row"><b>금액 및 결과</b> <span>${r.amount || '￦0'} (${getAmountType(r.amount, r.subCategory)}) ${statusIcon}</span></div>
+            <div class="summary-row" style="border-bottom:none; font-size:11px; color:#666;">
                 <b>기능지원 여부</b>
-                <span>PIN출력 ${formatStep(r.pinOut)} / PinbyPass ${formatStep(r.pinBypass)} / QPS ${formatStep(r.qpsStatus)}</span>
+                <span>Hotkey:${f(r.hotkey)} / Brand:${f(r.brandSelection)} / PIN:${f(r.pinOut)} / PBP:${f(r.pinBypass)} / QPS:${f(r.qpsStatus)}</span>
             </div>
-            <div style="font-size:12px; margin-top:8px; color:#666; padding-top:8px; border-top:1px solid #eee;">
-                <b>Memo:</b> ${r.memo || '-'}
-            </div>
+            <div style="font-size:12px; margin-top:8px; color:#666; padding-top:8px; border-top:1px solid #eee;"><b>Memo:</b> ${r.memo || '-'}</div>
         `;
     }
 
     function closeResult() { document.getElementById('resultModal').style.display = 'none'; }
 
+    // --- v3.7 수정된 엑셀 저장 로직 ---
     function saveToExcel() {
         const storeName = document.getElementById('storeName').value || "테스트";
-        const headers = ["Number", "Date", "Merchant", "MID", "Merchant Name in UPI system", "Acquirer", "Acquirer IIN", "VAN", "MIS", "Terminal Model", "Self-service terminal/staffed counter", "Which card reader?", "Card Number", "Card Type", "Transaction Amount", "Transaction Type", "NFC Type", "With/ without hotkey?", "Terminal Request PIN?", "PIN Bypass support?", "Successful/ Failed?", "Test result - Description", "Problem Followup"];
+        
+        // 1. NFC Type 제거 및 명칭/순서 조정
+        const headers = [
+            "Number", "Date", "Merchant", "Card Number", "Card Type", 
+            "Transaction Amount", "Transaction Type", "With/ without hotkey?", 
+            "Brand Selection", "Terminal Request PIN?", "PIN Bypass support?", 
+            "QPS support?", "Successful/ Failed?", "Memo"
+        ];
+
+        // 2. UI 데이터 매핑 (Brand Selection 및 QPS support 결과값 연결)
         const dataRows = records.map((r, i) => [
-            i + 1, document.getElementById('testDateTime').value.split(' ')[0], storeName, "", "", "", "", "", "", "", "", "", 
-            getAssignedCard(r.category, r.subCategory), r.category, r.amount, r.subCategory, "", r.hotkey, r.pinOut, r.pinBypass, r.status, r.memo, ""
+            i + 1, 
+            new Date().toISOString().split('T')[0], 
+            storeName, 
+            getAssignedCard(r.category, r.subCategory), 
+            r.category, 
+            r.amount, 
+            r.subCategory, 
+            r.hotkey,           // With/ without hotkey?
+            r.brandSelection,    // Brand Selection (Y/N/N/A)
+            r.pinOut,           // Terminal Request PIN?
+            r.pinBypass,        // PIN Bypass support?
+            r.qpsStatus,        // QPS support? (Y/N/N/A)
+            r.status, 
+            r.memo
         ]);
+
         const worksheet = XLSX.utils.aoa_to_sheet([headers, ...dataRows]);
         const workbook = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(workbook, worksheet, "UPI_Report");
         XLSX.writeFile(workbook, `${storeName}_UPI_Report.xlsx`);
     }
-
-    function setStaticTime() {
-        const now = new Date();
-        document.getElementById('testDateTime').value = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
-    }
-    setStaticTime(); renderTabs();
+    renderTabs();
 </script>
 </body>
 </html>
